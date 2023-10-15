@@ -68,6 +68,11 @@ endif
 
 filetype plugin indent on
 
+" Force some filetypes to be a certain type
+au bufnewfile,bufRead *.pod set ft=perl
+au bufnewfile,bufRead *.sub set ft=perl
+
+
 " -----------------------------------------------------------------------------
 " Color settings
 " -----------------------------------------------------------------------------
@@ -149,6 +154,7 @@ let g:dracula_italic = 0
 "let g:seoul256_background = 233
 "colorscheme seoul256
 
+
 " -----------------------------------------------------------------------------
 " Status line
 " -----------------------------------------------------------------------------
@@ -168,19 +174,47 @@ let g:dracula_italic = 0
 
 " let &statusline = s:statusline_expr()
 
+
+" ----------------------------------------------------------------------------
+" Highlights
+" ----------------------------------------------------------------------------
+
+":hi clear FoldColumn
+
+:hi clear VertSplit
+
+" This leaves a nice underline
+":hi clear CursorLine
+":hi CursorLine cterm=underline ctermfg=NONE gui=underline guifg=NONE
+
+
+
 " ----------------------------------------------------------------------------
 " Basic Settings
 " ----------------------------------------------------------------------------
 
+let $RTP=split(&runtimepath, ',')[0]
+let $RC="$HOME/.vimrc"
+
 set encoding=utf-8
 
-" shorten updatetime for faster experience
+" shorten updatetime for faster experience, default is 4000 ms (too long)
 set updatetime=50
+set redrawtime=4000 "Allow more time for loading syntax on large files, default=2000
+
+"set min/max highlighted lines, from cursor position, helps with slow machines
+syntax sync minlines=200
+syntax sync maxlines=500
 
 set exrc
 
 " don't bell or blink
 set noerrorbells visualbell t_vb=
+set belloff=all
+if (has("autocmd") && has("gui_running"))
+    autocmd GUIEnter * set vb t_vb=
+endif
+
 
 " line numbers
 set relativenumber              " Display relative line numbers
@@ -201,8 +235,20 @@ set autoindent
 set smartindent
 set smarttab
 
-"set sessionoptions-=options
-"set viewoptions-=options
+" to convert tabs to spaces
+" set exandtab
+" :retab!
+
+" to convert spaces to tabs
+" set noexpandtab
+" :retab!
+
+
+" Saving options in session and view files causes more problems than it
+" solves, so disable it
+set sessionoptions-=options
+set viewoptions-=options
+
 "if !empty(&viminfo)
 "    set viminfo^=!
 "endif
@@ -220,12 +266,19 @@ noremap <F7> :set list!<CR>
 inoremap <F7> <C-o>:set list!<CR>
 cnoremap <F7> <C-c>:set list!<CR>
 
+
 set formatoptions+=j " Delete comment character when joining commented lines
 
+" Replace the check for a tags file in the parent directory of the current
+" file with a check in every ancester directory
 if has('path_extra')
     setglobal tags-=./tags tags-=./tags; tags^=./tags;
 endif
 
+" correctly highlight $() and other modern affordances in filetype=sh.
+if !exists('g:is_posix') && !exists('g:is_bash') && !exists('g:is_kornshell') && !exists('g:is_dash')
+    let g:is_posix=1
+endif
 
 " I hate folding
 set foldmethod=manual
@@ -236,10 +289,16 @@ set nofoldenable                " disable folding
 " searching
 set incsearch
 set showmatch
-set nohlsearch                  " don't leave highlighted search
+"set nohlsearch                  " don't leave highlighted search
+set hlsearch                    " highlight search matches
 set ignorecase
 set smartcase
 set gdefault                    " when substituting :s/// g is always on
+set wrapscan                    " wrap around when searching
+
+" disable search highlighting when <c-L> when refreshing the screen
+"nnoremap <c-L> :nohl<cr><c-L>
+
 
 set backspace=indent,eol,start  " allow backspacing over autoindent,EOL,BOL
 
@@ -264,6 +323,11 @@ set wildignore+=**/virtualenv_run/**,*.pyc,*.pyo,__pychache__
 "set path+=**
 set path=.,**                   " search local and sub-dirs
 
+set rtp+=~/.local/bin
+
+"include project directories
+"set path+=~/projects/**
+
 set ruler
 
 " moving around
@@ -272,37 +336,53 @@ set sidescrolloff=5             " start scrolling to right when 5 characters awa
 set display+=lastline
 set nostartofline
 
+" for faster scrolling
+set ttyfast
+
 " Messages, info, status
 set guicursor=                  " configure cursor to be a block
 set title                       " show title in console title bar
 set cursorline                  " have line indicating the cursor position
 "set colorcolumn=80              " show column line
-"set signcolumn=yes
+set signcolumn=auto
 set ruler                       " show the cursor position
 set showcmd
-"set showmode
+"set showmode                   " show mode (insert,replace, etc..)
 set laststatus=2                " always show statusline even if only 1 window
 "set cmdheight=2
 set modelines=2
 set modeline                    " allow vim options to be embedded in files
+setglobal modeline
 set shortmess+=c
 set textwidth=0
 
 set mouse=a                     " allow mouse clicks to change cursor position
+set ttymouse=xterm2             " make vim play nice within tmux
+set term=xterm
+set go=a
+
+set icon
+
+
+"set clipboard=unnamedplus
+
 
 " set hidden hides buffers instead of closing them
 set hidden
 
 " backups
 set nobackup                    " turn off backups
+set nowritebackup
 set noswapfile                  " turn off swap files
 " set directory=/var/tmp        " set swap files to be in /var/tmp
 
 " undo
 set undodir=~/.vim/undodir
 set undofile
+set history=9000
 
 "set paste
+set pastetoggle=<F4>
 
 set noautowrite                 " don't write unless i request it
 set noautowriteall              " never
@@ -312,6 +392,10 @@ set ffs=unix,dos,mac            " try recognizing dos, unix & mac line endings
 " disable italicsertically
 set diffopt+=vertical
 
+" disable leader timeout
+set notimeout
+set ttimeout
+
 set spelllang=en_us
 
 if executable('rg')
@@ -319,12 +403,127 @@ if executable('rg')
 endif
 
 
+" I can't live without this!
 set comments=n:#                " python/perl/bash comments
 map # !!perl -pe'm{^\# ?}?s{^\#}{}:m{\S}?s{^}{\#}:1'<CR><LF>
+
+
+" -----------------------------------------------------------------------------
+" some useful key bindings
+" -----------------------------------------------------------------------------
 
 " set leader key to spacebar
 let mapleader=" "
 let maplocalleader=" "
+
+" remap C-c to <esc>
+nmap <c-c> <esc>
+imap <c-c> <esc>
+vmap <c-c> <esc>
+omap <c-c> <esc>
+
+" to quickly exit insert mode without pressing escape or Ctrl-C/Ctrl-[
+inoremap jj <esc>
+"inoremap jk <esc>
+"inoremap hj <esc>
+
+" make shift Y tank till end of line, similar to shift D and shift C
+nnoremap Y y$
+
+" yank to x11 clipboard
+nnoremap <leader>y "*y"
+
+" paste from x11 clipboard
+nnoremap <leader>p "*p"
+
+" repaste selected text
+nnoremap gp `[v`]
+
+" keeping it centered while searching, zz centre, zv openfold
+nnoremap n nzzzv
+nnoremap N Nzzzv
+" keeps line concatination centered
+nnoremap J mzJ`z
+"nnoremap <C-j> :cnext<cr>zzzv
+
+" undo break points
+inoremap , ,<c-g>u
+inoremap . .<c-g>u
+inoremap ! !<c-g>u
+inoremap ? ?<c-g>u
+inoremap ; ;<c-g>u
+inoremap : :<c-g>u
+inoremap [ [<c-g>u
+inoremap } }<c-g>u
+inoremap { {<c-g>u
+inoremap " "<c-g>u
+inoremap ' '<c-g>u
+
+" Jumplist mutations
+nnoremap <expr> k (v:count > 5 ? "m'" . v:count : "") . 'k'
+nnoremap <expr> j (v:count > 5 ? "m'" . v:count : "") . 'j'
+
+" moving text
+"vnoremap J :m '>+1<cr>gv=gv
+"vnoremap K :m '<-2<cr>gv=gv
+"inoremap <C-j> <esc>:m .+1<cr>==gi
+"inoremap <C-k> <esc>:m .-2<cr>==gi
+"nnoremap <leader>j :m .+1<cr>==
+"nnoremap <leader>k :m .-2<cr>==
+
+" add quotes around visual selection
+vnoremap " <esc>`>a"<esc>`<i"<esc>
+
+"edit command
+cnoremap %% <c-r>=fnameescape(expand('%:h')).'/'<cr>
+map <leader>ew :e %%
+map <leader>es :sp %%
+map <leader>ev :vsp %%
+map <leader>et :tabe %%
+
+" better tabbing
+vnoremap < <gv
+vnoremap > >gv
+
+" better page up/down
+" nnoremap <c-n> <d-d>
+" nnoremap <c-p> <c-u>
+
+" moves half a screen up/down and stays centered
+nnoremap <c-d> <c-d>zz
+nnoremap <c-u> <c-u>zz
+
+" fix home/end keys in all modes
+map OH <home>
+cmap OH <home>
+imap OH <home>
+map OF <end>
+cmap OF <end>
+imap OF <end>
+
+" allow '-' to open the parent directory in netrw
+nnoremap <silent> - :e %:h<cr>
+
+" fix wierd delete key bug in insert mode
+imap [3~ <del>
+
+" Use Shift H and Shift L to move to beginning and end of line
+nnoremap <s-h> 0
+nnoremap <s-l> $
+
+" bottom terminal
+map <leader>t :bot terminal ++rows=20 ++close<cr>
+" open terminal in new tab
+map <leader>T :tab term ++close<cr>
+
+" map abreviations YOU'RE WELCOME!
+cabbrev WQ wq
+cabbrev Wq wq
+cabbrev W w
+cabbrev Q q
+
+cabbrev Vimrc e ~/.vimrc<cr>
+
 
 " -----------------------------------------------------------------------------
 " splits and tabs
@@ -333,8 +532,27 @@ let maplocalleader=" "
 set splitbelow                  " split new horizontal window below
 set splitright                  " split new textplorer vertically
 
+set tabpagemax=50
+
 ":sp for horizontal split
 ":vsp for vertical split
+
+nnoremap <leader><bar> :vsplit<cr>
+nnoremap <leader>- :split<cr>
+
+" allow gf to edit non-existant files
+map gf :edit <cfile><cr>
+nnoremap <leader>gf :edit cfile<cr>
+
+" gf edit fiel under cursor in same window
+" <c-w>f - edit file under cursor in horiz split
+" <c-w>vgf - edit file under cursor in vert split
+" try mapping to <c-w><c-F>
+" edit file under cursor in vert split window
+"<c-w>gf - edit file under cursor in new tab
+"Ctrl-^ or <c-6> opens previous file
+nnoremap <c-w><c-F> <c-w>vgf
+
 
 " remap window management keys to CTRL + hjkl
 map <c-h> <c-w>h
@@ -342,9 +560,17 @@ map <c-j> <c-w>j
 map <c-k> <c-w>k
 map <c-l> <c-w>l
 
+" remap window managment keys to CTRL + arrowkeys
+map <C-Left> <c-w>h
+map <C-Down> <c-w>j
+map <C-Up> <c-w>k
+map <C-Right> <c-w>l
+
+
 " cycle through splits with shit <Tab>
 noremap <S-Tab> <c-w>w
 
+" note: alternative below is to just use your mouse
 " adjust split sizes more friendly (resizes +/- 3)
 nnoremap <silent> <leader>h :vertical resize -3<CR>
 nnoremap <silent> <leader>l :vertical resize +3<CR>
@@ -356,7 +582,7 @@ nnoremap <silent> <leader>k :resize -3<CR>
 " <c-w>_ expands split verically
 " <c-w>= equalizes splits
 map <leader>= <c-w>=
-map <leader><bar> <c-w>|
+"map <leader><bar> <c-w>| " I use this for vsplit
 map <leader>_ <c-w>_
 
 " removes pipes | that act as seperators on splits
@@ -364,6 +590,8 @@ map <leader>_ <c-w>_
 "set fillchars="vert:,fold:-,eob:~"
 " to change character from pipes to something else
 "set fillchars+=vert:\
+:hi clear VertSplit
+
 
 " rotate splits from vertical to horizontal or horizontal to vertical
 "map <leader>th <c-w>t<c-w>H
@@ -385,6 +613,29 @@ map ␛0 ␛:tabnext 10
 " Select all
 nmap <C-a> gg<S-v>G
 
+
+" Tab management
+nmap <silent> <c-t>n :tabnew<cr>
+nmap <silent> <c-t>h :tabprev<cr>
+nmap <silent> <c-t>l :tabnext<cr>
+nmap <silent> <c-t>c :tabclose<cr>
+nmap <silent> <c-t>d :tabe %<cr>
+
+" cycle through tabs with shift TAB
+"nmap <S-Tab> :tabnext<cr>
+" cycle through tabs with Ctrl-TAB
+nmap <silent> <C-Tab> :tabnext<cr>
+
+" Buffer Management
+nnoremap <F9> :buffers<cr>:buffer<space>
+
+" cycle through buffers C-Up/Down like vscode
+nmap <C-PageUp> :bp<cr>
+nmap <C-PageDown> :bn<cr>
+
+"list buffers
+nmap <silent> <leader>fb :buffers<cr>
+nmap <silent> <leader>fm :marks<cr>
 
 " -----------------------------------------------------------------------------
 " Basic autocommands

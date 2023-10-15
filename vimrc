@@ -70,6 +70,8 @@ Plug 'stephpy/vim-yaml'
 Plug 'tmux-plugins/vim-tmux'
 Plug 'pangloss/vim-javascript'
 
+Plug 'iamcco/markdown-preview.nvim'
+
 Plug 'christoomey/vim-tmux-navigator'
 
 "Automatically show vim's complete menu while typing.
@@ -740,8 +742,24 @@ inoremap <expr> <Left> pumvisible() ? "<C-e>" : "<Left>"
 " Auto-resize splits when vim gets resized
 autocmd VimResized * wincmd =
 
+" Update a buffer's contents on focus if it changed outside of Vim.
+au FocusGained,BufEnter * :checktime
+
 " Ensure tabs don't get converted to spaces in Makefiles.
 autocmd FileType make setlocal noexpandtab
+
+
+" Only show the cursor line in the active buffer.
+augroup CursorLine
+    au!
+    au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+    au WinLeave * setlocal nocursorline
+augroup END
+
+
+" Unset paste on InsertLeave.
+autocmd InsertLeave * silent! set nopaste
+
 
 " -----------------------------------------------------------------------------
 " Plugin settings, mappings and autocommands
@@ -766,6 +784,13 @@ let g:airline_theme='gruvbox_material'
 "let g:airline_theme='tokyonight'
 "let g:airline_theme='luna'
 
+" .............................................................................
+" iamcco/markdown-preview.nvim
+" .............................................................................
+
+let g:mkdp_auto_close=0
+let g:mkdp_refresh_slow=1
+
 " ............................................................................
 " ctrlp
 " ............................................................................
@@ -789,7 +814,7 @@ let g:fzf_action = {
   \ 'ctrl-y': {lines -> setreg('*', join(lines, "\n"))}}
 
 " Launch fzf with CTRL+P.
-"nnoremap <silent> <C-p> :FZF -m<CR>
+nnoremap <silent> <C-p> :FZF -m<CR>
 nnoremap <silent> <Leader>p :FZF -m<CR>
 
 " Map a few common things to do with FZF.

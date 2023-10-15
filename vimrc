@@ -245,6 +245,17 @@ if (has("autocmd") && has("gui_running"))
     autocmd GUIEnter * set vb t_vb=
 endif
 
+" Use a line cursor within insert mode and a block cursor everywhere else.
+" Reference chart of values:
+"   Ps = 0  -> blinking block.
+"   Ps = 1  -> blinking block (default).
+"   Ps = 2  -> steady block.
+"   Ps = 3  -> blinking underline.
+"   Ps = 4  -> steady underline.
+"   Ps = 5  -> blinking bar (xterm).
+"   Ps = 6  -> steady bar (xterm).
+let &t_SI = "\e[6 q"
+let &t_EI = "\e[2 q"
 
 " line numbers
 set relativenumber              " Display relative line numbers
@@ -328,9 +339,6 @@ set wrapscan                    " wrap around when searching
 set matchpairs+=<:>             " Use % to jump between pairs
 set virtualedit=block
 
-" disable search highlighting when <c-L> when refreshing the screen
-"nnoremap <c-L> :nohl<cr><c-L>
-
 
 set backspace=indent,eol,start  " allow backspacing over autoindent,EOL,BOL
 
@@ -374,7 +382,7 @@ set nostartofline
 set ttyfast
 
 " Messages, info, status
-set guicursor=                  " configure cursor to be a block
+"set guicursor=                  " configure cursor to be a block
 set title                       " show title in console title bar
 set cursorline                  " have line indicating the cursor position
 "set colorcolumn=80              " show column line
@@ -459,6 +467,14 @@ imap <c-c> <esc>
 vmap <c-c> <esc>
 omap <c-c> <esc>
 
+" Seamlessly treat visual lines as actual lines when moving around.
+noremap j gj
+noremap k gk
+noremap <Down> gj
+noremap <Up> gk
+inoremap <Down> <C-o>gj
+inoremap <Up> <C-o>gk
+
 " to quickly exit insert mode without pressing escape or Ctrl-C/Ctrl-[
 inoremap jj <esc>
 "inoremap jk <esc>
@@ -469,6 +485,9 @@ nnoremap Y y$
 
 " yank to x11 clipboard
 nnoremap <leader>y "*y"
+
+" Keep cursor at the bottom of the visual selection after you yank it.
+vmap y ygv<Esc>
 
 " paste from x11 clipboard
 nnoremap <leader>p "*p"
@@ -552,6 +571,23 @@ nnoremap <s-l> $
 map <leader>t :bot terminal ++rows=20 ++close<cr>
 " open terminal in new tab
 map <leader>T :tab term ++close<cr>
+
+" Clear search highlights.
+map <Leader><Space> :let @/=''<CR>
+
+" Prevent x and the delete key from overriding what's in the clipboard.
+noremap x "_x
+noremap X "_x
+noremap <Del> "_x
+
+" Prevent selecting and pasting from overwriting what you originally copied.
+xnoremap p pgvy
+
+" Edit Vim config file in a new tab.
+map <Leader>ev :tabnew $MYVIMRC<CR>
+
+" Source Vim config file.
+map <Leader>sv :source $MYVIMRC<CR>
 
 " map abreviations YOU'RE WELCOME!
 cabbrev WQ wq

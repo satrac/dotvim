@@ -685,7 +685,6 @@ map 0 :tabnext 10
 " Select all
 nmap <C-a> gg<S-v>G
 
-
 " Tab management
 nmap <silent> <c-t>n :tabnew<cr>
 nmap <silent> <c-t>h :tabprev<cr>
@@ -709,14 +708,40 @@ nmap <C-PageDown> :bn<cr>
 nmap <silent> <leader>fb :buffers<cr>
 nmap <silent> <leader>fm :marks<cr>
 
+" Toggle quickfix window.
+function! QuickFix_toggle()
+    for i in range(1, winnr('$'))
+        let bnum = winbufnr(i)
+        if getbufvar(bnum, '&buftype') == 'quickfix'
+            cclose
+            return
+        endif
+    endfor
+
+    copen
+endfunction
+nnoremap <silent> <Leader>c :call QuickFix_toggle()<CR>
+
+" Navigate the complete menu items like CTRL+n / CTRL+p would.
+inoremap <expr> <Down> pumvisible() ? "<C-n>" :"<Down>"
+inoremap <expr> <Up> pumvisible() ? "<C-p>" : "<Up>"
+
+" Select the complete menu item like CTRL+y would.
+inoremap <expr> <Right> pumvisible() ? "<C-y>" : "<Right>"
+inoremap <expr> <TAB> pumvisible() ? "<C-y>" : "<TAB>"
+
+" Cancel the complete menu item like CTRL+e would.
+inoremap <expr> <Left> pumvisible() ? "<C-e>" : "<Left>"
+
 " -----------------------------------------------------------------------------
 " Basic autocommands
 " -----------------------------------------------------------------------------
 
+" Auto-resize splits when vim gets resized
+autocmd VimResized * wincmd =
+
 " Ensure tabs don't get converted to spaces in Makefiles.
 autocmd FileType make setlocal noexpandtab
-
-
 
 " -----------------------------------------------------------------------------
 " Plugin settings, mappings and autocommands

@@ -58,6 +58,8 @@ Plug 'stephpy/vim-yaml'
 Plug 'tmux-plugins/vim-tmux'
 Plug 'pangloss/vim-javascript'
 
+Plug 'christoomey/vim-tmux-navigator'
+
 " Automatically executes filetype plugin indent on and syntax enable"
 call plug#end()
 
@@ -750,6 +752,29 @@ let g:NERDCreateDefaultMappings = 1
 let g:strip_whitespace_confirm=0
 let g:strip_whitelines_at_eof=1
 let g:strip_whitespace_on_save=1
+
+
+" .............................................................................
+" vim-tmux-navigator
+" .............................................................................
+
+let g:tmux_navigator_no_mappings = 1
+
+noremap <silent> <c-h> :<C-U>TmuxNavigateLeft<cr>
+noremap <silent> <c-j> :<C-U>TmuxNavigateDown<cr>
+noremap <silent> <c-k> :<C-U>TmuxNavigateUp<cr>
+noremap <silent> <c-l> :<C-U>TmuxNavigateRight<cr>
+noremap <silent> <c-\> :<C-U>TmuxNavigatePrevious<cr>
+
+" Write all buffers before navigating from Vim to tmux pane
+let g:tmux_navigator_save_on_switch = 2
+
+" Disable tmux navigator when zooming the Vim pane
+let g:tmux_navigator_disable_when_zoomed = 1
+
+" Disable wrapping
+let  g:tmux_navigator_no_wrap = 1
+
 
 " ............................................................................
 " netrw

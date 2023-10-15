@@ -37,6 +37,12 @@ Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
+" Distraction free writing
+Plug 'junegunn/goyo.vim'
+
+"Dim paragraphs above and below active paragraph
+Plug 'junegunn/limelight.vim'
+
 "Plug 'ctrlpvim/ctrlp.vim'
 
 Plug 'ntpeters/vim-better-whitespace'
@@ -48,17 +54,26 @@ Plug 'preservim/nerdcommenter'
 
 Plug 'preservim/tagbar'
 
+" Show git file changes in the gutter
+Plug 'mhinz/vim-signify'
+
+" Git wrapper plugin
 Plug 'tpope/vim-fugitive'
 
 " Languages and file types
 Plug 'vim-python/python-syntax'
 Plug 'godlygeek/tabular' | Plug 'tpope/vim-markdown'
 Plug 'PotatoesMaster/i3-vim-syntax'
+Plug 'Glench/Vim-Jinja2-Syntax'
+Plug 'ekalinin/dockerfile.vim'
 Plug 'stephpy/vim-yaml'
 Plug 'tmux-plugins/vim-tmux'
 Plug 'pangloss/vim-javascript'
 
 Plug 'christoomey/vim-tmux-navigator'
+
+"Automatically show vim's complete menu while typing.
+Plug 'vim-scripts/AutoComplPop'
 
 " Automatically executes filetype plugin indent on and syntax enable"
 call plug#end()
@@ -157,6 +172,33 @@ let g:dracula_italic = 0
 "colorscheme seoul256
 
 
+" Specific colorscheme settings (must come after setting your colorscheme).
+"if (g:colors_name == 'gruvbox')
+"  if (&background == 'dark')
+"    hi Visual cterm=NONE ctermfg=NONE ctermbg=237 guibg=#3a3a3a
+"  else
+"    hi Visual cterm=NONE ctermfg=NONE ctermbg=228 guibg=#f2e5bc
+"    hi CursorLine cterm=NONE ctermfg=NONE ctermbg=228 guibg=#f2e5bc
+"    hi ColorColumn cterm=NONE ctermfg=NONE ctermbg=228 guibg=#f2e5bc
+"  endif
+"endif
+
+":hi clear FoldColumn
+
+:hi clear VertSplit
+
+" This leaves a nice underline
+":hi clear CursorLine
+":hi CursorLine cterm=underline ctermfg=NONE gui=underline guifg=NONE
+
+
+" Spelling mistakes will be colored up red.
+hi SpellBad cterm=underline ctermfg=203 guifg=#ff5f5f
+hi SpellLocal cterm=underline ctermfg=203 guifg=#ff5f5f
+hi SpellRare cterm=underline ctermfg=203 guifg=#ff5f5f
+hi SpellCap cterm=underline ctermfg=203 guifg=#ff5f5f
+
+
 " -----------------------------------------------------------------------------
 " Status line
 " -----------------------------------------------------------------------------
@@ -175,20 +217,6 @@ let g:dracula_italic = 0
 " endfunction
 
 " let &statusline = s:statusline_expr()
-
-
-" ----------------------------------------------------------------------------
-" Highlights
-" ----------------------------------------------------------------------------
-
-":hi clear FoldColumn
-
-:hi clear VertSplit
-
-" This leaves a nice underline
-":hi clear CursorLine
-":hi CursorLine cterm=underline ctermfg=NONE gui=underline guifg=NONE
-
 
 
 " ----------------------------------------------------------------------------
@@ -297,6 +325,8 @@ set ignorecase
 set smartcase
 set gdefault                    " when substituting :s/// g is always on
 set wrapscan                    " wrap around when searching
+set matchpairs+=<:>             " Use % to jump between pairs
+set virtualedit=block
 
 " disable search highlighting when <c-L> when refreshing the screen
 "nnoremap <c-L> :nohl<cr><c-L>
@@ -306,7 +336,9 @@ set backspace=indent,eol,start  " allow backspacing over autoindent,EOL,BOL
 
 " sets the cwd to whatever file is in view, allows for better omni completion
 "set autochdir
-set completeopt=menuone,noinsert,noselect
+set complete+=kspell
+set completeopt=menuone,longest
+"set completeopt=menuone,noinsert,noselect
 "set complete-=i
 
 "wildmenu
@@ -359,7 +391,8 @@ set shortmess+=c
 set textwidth=0
 
 set mouse=a                     " allow mouse clicks to change cursor position
-set ttymouse=xterm2             " make vim play nice within tmux
+"set ttymouse=xterm2             " make vim play nice within tmux
+set ttymouse=sgr
 set term=xterm
 set go=a
 
@@ -376,7 +409,9 @@ set hidden
 set nobackup                    " turn off backups
 set nowritebackup
 set noswapfile                  " turn off swap files
-" set directory=/var/tmp        " set swap files to be in /var/tmp
+" set directory=/tmp        " set swap files to be in /tmp
+set directory=/tmp//,.
+
 
 " undo
 set undodir=~/.vim/undodir

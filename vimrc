@@ -519,13 +519,13 @@ inoremap ' '<c-g>u
 nnoremap <expr> k (v:count > 5 ? "m'" . v:count : "") . 'k'
 nnoremap <expr> j (v:count > 5 ? "m'" . v:count : "") . 'j'
 
-" moving text
-"vnoremap J :m '>+1<cr>gv=gv
-"vnoremap K :m '<-2<cr>gv=gv
-"inoremap <C-j> <esc>:m .+1<cr>==gi
-"inoremap <C-k> <esc>:m .-2<cr>==gi
-"nnoremap <leader>j :m .+1<cr>==
-"nnoremap <leader>k :m .-2<cr>==
+" moving text 1 line up or down with ALT j/k in normal,insert and visual modes
+vnoremap k :m '<-2<cr>gv=gv
+vnoremap k :m '>+1<cr>gv=gv
+inoremap k <esc>:m .-2<cr>==gi
+inoremap k <esc>:m .+1<cr>==gi
+nnoremap k :m .-2<cr>==
+nnoremap j :m .+1<cr>==
 
 " add quotes around visual selection
 vnoremap " <esc>`>a"<esc>`<i"<esc>
@@ -564,7 +564,7 @@ nnoremap <silent> - :e %:h<cr>
 imap [3~ <del>
 
 " Use Shift H and Shift L to move to beginning and end of line
-nnoremap <s-h> 0
+noremap <s-h> 0
 nnoremap <s-l> $
 
 " bottom terminal
@@ -628,16 +628,16 @@ nnoremap <c-w><c-F> <c-w>vgf
 
 
 " remap window management keys to CTRL + hjkl
-map <c-h> <c-w>h
-map <c-j> <c-w>j
-map <c-k> <c-w>k
-map <c-l> <c-w>l
+nnoremap <c-h> <c-w>h
+nnoremap <c-j> <c-w>j
+nnoremap <c-k> <c-w>k
+nnoremap <c-l> <c-w>l
 
 " remap window managment keys to CTRL + arrowkeys
-map <C-Left> <c-w>h
-map <C-Down> <c-w>j
-map <C-Up> <c-w>k
-map <C-Right> <c-w>l
+nnoremap <C-Left> <c-w>h
+nnoremap <C-Down> <c-w>j
+nnoremap <C-Up> <c-w>k
+nnoremap <C-Right> <c-w>l
 
 
 " cycle through splits with shit <Tab>
@@ -665,22 +665,21 @@ map <leader>_ <c-w>_
 "set fillchars+=vert:\
 :hi clear VertSplit
 
-
 " rotate splits from vertical to horizontal or horizontal to vertical
 "map <leader>th <c-w>t<c-w>H
 "map <leader>tk <c-w>t<c-w>K
 
 " switch between tabes with ALT-1, ALT-2, ALT-3,....ALT-0
-map ␛1 ␛:tabnext 1
-map ␛2 ␛:tabnext 2
-map ␛3 ␛:tabnext 3
-map ␛4 ␛:tabnext 4
-map ␛5 ␛:tabnext 5
-map ␛6 ␛:tabnext 6
-map ␛7 ␛:tabnext 7
-map ␛8 ␛:tabnext 8
-map ␛9 ␛:tabnext 9
-map ␛0 ␛:tabnext 10
+map 1 :tabnext 1
+map 2 :tabnext 2
+map 3 :tabnext 3
+map 4 :tabnext 4
+map 5 :tabnext 5
+map 6 :tabnext 6
+map 7 :tabnext 7
+map 8 :tabnext 8
+map 9 :tabnext 9
+map 0 :tabnext 10
 "NOTE: ^[ is Ctrl-v ESC and ^M is Ctrl-v Ctrl-m
 
 " Select all

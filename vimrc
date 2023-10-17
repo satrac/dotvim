@@ -24,6 +24,7 @@ Plug 'phanviet/vim-monokai-pro'
 Plug 'flazz/vim-colorschemes'
 Plug 'chriskempson/base16-vim'
 Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'rose-pine/vim', { 'as' : 'rosepine' }
 
 " modeline
 Plug 'vim-airline/vim-airline'
@@ -50,6 +51,8 @@ Plug 'vim-perl/vim-perl', { 'for': 'perl', 'do': 'make clean carp dancer highlig
 
 Plug 'preservim/nerdcommenter'
 "Plug 'tpope/vim-commentary'
+
+Plug 'tpope/vim-unimpaired'
 
 Plug 'preservim/tagbar'
 
@@ -131,7 +134,9 @@ set background=dark
 
 let g:gruvbox_contrast_dark='hard'
 let g:grubbox_materal_better_performance = 1
-colorscheme gruvbox-material
+"colorscheme gruvbox-material
+
+colorscheme rosepine
 
 " edge_style vailable values: default, aura, neon
 let g:edge_style = 'neon'
@@ -240,8 +245,8 @@ set updatetime=50
 set redrawtime=4000 "Allow more time for loading syntax on large files, default=2000
 
 "set min/max highlighted lines, from cursor position, helps with slow machines
-syntax sync minlines=200
-syntax sync maxlines=500
+"syntax sync minlines=200
+"syntax sync maxlines=500
 
 set exrc
 
@@ -590,11 +595,11 @@ noremap <Del> "_x
 " Prevent selecting and pasting from overwriting what you originally copied.
 xnoremap p pgvy
 
+" commented out interferes with Coc mappings
 " Edit Vim config file in a new tab.
-map <Leader>ev :tabnew $MYVIMRC<CR>
-
+"noremap <Leader>ev :tabnew $MYVIMRC<CR>
 " Source Vim config file.
-map <Leader>sv :source $MYVIMRC<CR>
+"noremap <Leader>sv :source $MYVIMRC<CR>
 
 " map abreviations YOU'RE WELCOME!
 cabbrev WQ wq
@@ -602,8 +607,7 @@ cabbrev Wq wq
 cabbrev W w
 cabbrev Q q
 
-cabbrev Vimrc e ~/.vimrc<cr>
-
+cabbrev Vimrc e $MYVIMRC<cr>
 
 " -----------------------------------------------------------------------------
 " splits and tabs

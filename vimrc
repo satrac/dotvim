@@ -57,7 +57,8 @@ Plug 'tpope/vim-unimpaired'
 Plug 'preservim/tagbar'
 
 " Show git file changes in the gutter
-Plug 'mhinz/vim-signify'
+Plug 'airblade/vim-gitgutter'
+"Plug 'mhinz/vim-signify'
 
 " Git wrapper plugin
 Plug 'tpope/vim-fugitive'
@@ -136,7 +137,13 @@ let g:gruvbox_contrast_dark='hard'
 let g:grubbox_materal_better_performance = 1
 "colorscheme gruvbox-material
 
+let g:disable_bg = 1
+"let g:disable_float_bg = 1
 colorscheme rosepine
+"colorscheme rosepine_moon " difference is the background
+"set background=light
+"colorscheme rosepine_dawn
+" transparent background
 
 " edge_style vailable values: default, aura, neon
 let g:edge_style = 'neon'
@@ -595,6 +602,13 @@ noremap <Del> "_x
 " Prevent selecting and pasting from overwriting what you originally copied.
 xnoremap p pgvy
 
+" Select all
+nmap <C-a> gg<S-v>G
+
+" move cursor to empty space at end of line
+set virtualedit+=onemore
+nnoremap $ $l
+
 " commented out interferes with Coc mappings
 " Edit Vim config file in a new tab.
 "noremap <Leader>ev :tabnew $MYVIMRC<CR>
@@ -693,8 +707,6 @@ map 9 :tabnext 9
 map 0 :tabnext 10
 "NOTE: ^[ is Ctrl-v ESC and ^M is Ctrl-v Ctrl-m
 
-" Select all
-nmap <C-a> gg<S-v>G
 
 " Tab management
 nmap <silent> <c-t>n :tabnew<cr>
@@ -783,7 +795,8 @@ set noshowmode                  " vim-airline already displays mode
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
 "let g:airline_theme='gruvbox'
-let g:airline_theme='gruvbox_material'
+"let g:airline_theme='gruvbox_material'
+"let g:airline_theme='deus'
 "let g:airline_theme='edge'
 "let g:airline_theme='everforest'
 "let g:airline_theme='sonokai'
@@ -792,6 +805,18 @@ let g:airline_theme='gruvbox_material'
 "let g:airline_theme='onedark'
 "let g:airline_theme='tokyonight'
 "let g:airline_theme='luna'
+"let g:airline_theme='simple'
+"let g:airline_theme='zenburn'
+"let g:airline_theme='tomorrow'
+"let g:airline_theme='raven'
+"let g:airline_theme='base16_spacemacs'
+"let g:airline_theme='violet'
+"let g:airline_theme='ayu_dark'
+"let g:airline_theme='base16_brogrammer'
+let g:airline_theme='base16_dracula'
+"let g:airline_solarized_bg='dark' " light and dark values
+"let g:airline_theme='solarized'
+
 
 " .............................................................................
 " iamcco/markdown-preview.nvim

@@ -12,6 +12,8 @@ call plug#begin('~/.vim/plugged')
 
 " Themes
 Plug 'joshdick/onedark.vim'
+Plug 'rakr/vim-one'
+Plug 'connorholyday/vim-snazzy'
 Plug 'ghifarit53/tokyonight-vim'
 Plug 'gruvbox-community/gruvbox'
 Plug 'junegunn/seoul256.vim'
@@ -25,6 +27,8 @@ Plug 'flazz/vim-colorschemes'
 Plug 'chriskempson/base16-vim'
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'rose-pine/vim', { 'as' : 'rosepine' }
+Plug 'camgunz/amber'
+
 
 " modeline
 Plug 'vim-airline/vim-airline'
@@ -71,6 +75,8 @@ Plug 'Glench/Vim-Jinja2-Syntax'
 Plug 'ekalinin/dockerfile.vim'
 Plug 'stephpy/vim-yaml'
 Plug 'pangloss/vim-javascript'
+Plug 'jceb/vim-orgmode'
+
 
 " Markdown preview
 Plug 'iamcco/markdown-preview.nvim'
@@ -85,6 +91,7 @@ Plug 'christoomey/vim-tmux-navigator'
 " Coc.vim completion
 " Use release branch (recommended)
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
 
 " Automatically executes filetype plugin indent on and syntax enable"
 call plug#end()
@@ -109,11 +116,14 @@ if (has("termguicolors"))
 " https://github.com/vim/vim/issues/993#issuecomment-255651605
     let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
     let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    "set t_8b=^[[48;2;%lu;%lu;%lum
+    "set t_8f=^[[38;2;%lu;%lu;%lum
 " for 256 colors
     set t_Co=256
     let g:rehash256=1
     set termguicolors
 endif
+
 
 " vim hardcodes background color erase even if the terminfo file does
 " not contain bce (not to mention that libvte based terminals
@@ -131,6 +141,11 @@ set background=dark
 
 "colorscheme onedark
 
+let g:one_allow_italics = 1 " I love italic for comments
+"colorscheme one
+
+"colorscheme snazzy
+
 "colorscheme gruvbox
 
 let g:gruvbox_contrast_dark='hard'
@@ -144,6 +159,10 @@ colorscheme rosepine
 "set background=light
 "colorscheme rosepine_dawn
 " transparent background
+
+" amber
+"colorscheme amber
+
 
 " edge_style vailable values: default, aura, neon
 let g:edge_style = 'neon'
@@ -233,7 +252,7 @@ hi SpellCap cterm=underline ctermfg=203 guifg=#ff5f5f
 "   let pct = ' %P'
 
 "   return '[%n] %f %<'.mod.ro.ft.fug.sep.pos.'%*'.pct
-" endfunction
+" endfunctiot
 
 " let &statusline = s:statusline_expr()
 
@@ -572,9 +591,9 @@ nnoremap <c-u> <c-u>zz
 map OH <home>
 cmap OH <home>
 imap OH <home>
-map OF <end>
-cmap OF <end>
-imap OF <end>
+map OF <end>l
+cmap OF <end>l
+imap OF <end>l
 
 " allow '-' to open the parent directory in netrw
 nnoremap <silent> - :e %:h<cr>

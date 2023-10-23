@@ -41,6 +41,9 @@ Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
+" vim for writers
+Plug 'reedes/vim-pencil'
+
 " Distraction free writing
 Plug 'junegunn/goyo.vim'
 
@@ -69,7 +72,9 @@ Plug 'tpope/vim-fugitive'
 
 " Languages and file types
 Plug 'vim-python/python-syntax'
-Plug 'godlygeek/tabular' | Plug 'tpope/vim-markdown'
+Plug 'godlygeek/tabular'
+Plug 'preservim/vim-markdown'
+"Plug 'tpope/vim-markdown'
 Plug 'PotatoesMaster/i3-vim-syntax'
 Plug 'Glench/Vim-Jinja2-Syntax'
 Plug 'ekalinin/dockerfile.vim'
@@ -152,7 +157,7 @@ let g:gruvbox_contrast_dark='hard'
 let g:grubbox_materal_better_performance = 1
 "colorscheme gruvbox-material
 
-let g:disable_bg = 1
+"let g:disable_bg = 1
 "let g:disable_float_bg = 1
 colorscheme rosepine
 "colorscheme rosepine_moon " difference is the background
@@ -588,12 +593,13 @@ nnoremap <c-d> <c-d>zz
 nnoremap <c-u> <c-u>zz
 
 " fix home/end keys in all modes
-map OH <home>
+nmap OH <home>
 cmap OH <home>
 imap OH <home>
-map OF <end>l
-cmap OF <end>l
-imap OF <end>l
+" move cursor one more char to right in normal mode
+nmap OF <end>l
+cmap OF <end>
+imap OF <end>
 
 " allow '-' to open the parent directory in netrw
 nnoremap <silent> - :e %:h<cr>
@@ -811,6 +817,13 @@ autocmd InsertLeave * silent! set nopaste
 
 set noshowmode                  " vim-airline already displays mode
 
+"Fonts for the Status Line
+let g:airline_powerline_fonts = 1
+
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
 "let g:airline_theme='gruvbox'
@@ -843,6 +856,38 @@ let g:airline_theme='base16_dracula'
 
 let g:mkdp_auto_close=0
 let g:mkdp_refresh_slow=1
+
+" .............................................................................
+" preservim/vim-markdown
+" .............................................................................
+
+let g:vim_markdown_folding_disabled = 1
+
+" pythonesque folding stylel
+"let g:vim_markdown_folding_style_pythonic = 1
+
+let g:vim_markdown_toc_autofit = 1
+
+set conceallevel=2
+
+" to disable conceal
+"let g:vim_markdown_conceal = 0
+
+" allows ge to follow file#anchor
+let g:vim_markdown_follow_anchor = 1
+
+" hightlight yaml frontmatter
+let g:vim_markdown_frontmatter = 1
+
+" do not require .md extentions for markdown links
+" This is super useful for GitLab and GitHub wiki repositories.
+let g:vim_markdown_no_extensions_in_markdown = 1
+
+" how to open files using ge
+" tab, vsplit, hsplit, current
+" default is current
+"let g:vim_markdown_edit_url_in = 'tab'
+
 
 " ............................................................................
 " ctrlp

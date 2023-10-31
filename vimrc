@@ -28,7 +28,12 @@ Plug 'chriskempson/base16-vim'
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'rose-pine/vim', { 'as' : 'rosepine' }
 Plug 'camgunz/amber'
-
+Plug 'ayu-theme/ayu-vim'
+"Plug 'k4yt3x/ayu-vim-darker'
+"Plug 'namrabtw/rusty.nvim', { 'branch': 'main' }
+Plug 'patstockwell/vim-monokai-tasty'
+Plug 'drsooch/gruber-darker-vim'
+Plug 'madyanov/gruber.vim'
 
 " modeline
 Plug 'vim-airline/vim-airline'
@@ -123,7 +128,7 @@ if (has("termguicolors"))
     let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
     "set t_8b=^[[48;2;%lu;%lu;%lum
     "set t_8f=^[[38;2;%lu;%lu;%lum
-" for 256 colors
+    " for 256 colors
     set t_Co=256
     let g:rehash256=1
     set termguicolors
@@ -159,7 +164,7 @@ let g:grubbox_materal_better_performance = 1
 
 "let g:disable_bg = 1
 "let g:disable_float_bg = 1
-colorscheme rosepine
+"colorscheme rosepine
 "colorscheme rosepine_moon " difference is the background
 "set background=light
 "colorscheme rosepine_dawn
@@ -168,6 +173,22 @@ colorscheme rosepine
 " amber
 "colorscheme amber
 
+
+" ayu
+"let ayucolor="light"  " for light version of theme
+"let ayucolor="mirage" " for mirage version of theme
+let ayucolor="dark"   " for dark version of theme
+"let ayucolor="darker"   " for dark version of theme
+"colorscheme ayu
+
+" gruber
+"colorscheme GruberDarker
+" slightly better version
+colorscheme gruber
+
+
+" rusty
+"colorscheme rusty
 
 " edge_style vailable values: default, aura, neon
 let g:edge_style = 'neon'
@@ -184,6 +205,10 @@ let g:everforest_background = 'hard'
 let g:everforest_better_performance = 1
 "colorscheme everforest
 
+let g:vim_monokai_tasty_italic = 1                    " allow italics, set this before the colorscheme
+let g:vim_monokai_tasty_machine_tint = 1              " use `mahcine` colour variant
+let g:vim_monokai_tasty_highlight_active_window = 1   " make the active window stand out
+"colorscheme vim-monokai-tasty
 
 " sonokai_style values: default, atlantis, andromeda, shusia, maia, espresso
 let g:sonokai_style = 'espresso'
@@ -228,11 +253,13 @@ let g:dracula_italic = 0
 
 ":hi clear FoldColumn
 
-:hi clear VertSplit
+hi clear VertSplit
 
 " This leaves a nice underline
 ":hi clear CursorLine
 ":hi CursorLine cterm=underline ctermfg=NONE gui=underline guifg=NONE
+
+hi clear SignColumn
 
 
 " Spelling mistakes will be colored up red.
@@ -288,6 +315,7 @@ if (has("autocmd") && has("gui_running"))
     autocmd GUIEnter * set vb t_vb=
 endif
 
+set guicursor=
 " Use a line cursor within insert mode and a block cursor everywhere else.
 " Reference chart of values:
 "   Ps = 0  -> blinking block.
@@ -301,7 +329,7 @@ let &t_SI = "\e[6 q"
 let &t_EI = "\e[2 q"
 
 " line numbers
-set relativenumber              " Display relative line numbers
+"set relativenumber              " Display relative line numbers
 set number                      " Display line numbers
 set numberwidth=1               " using only 1 column while possible
 
@@ -352,6 +380,13 @@ cnoremap <F7> <C-c>:set list!<CR>
 
 
 set formatoptions+=j " Delete comment character when joining commented lines
+
+" disable comment continuation
+set formatoptions-=r formatoptions-=c formatoptions-=o
+
+" to always set these options we use autocmd
+autocmd FileType * set formatoptions-=c formatoptions-=r formatoptions-=o formatoptions+=j
+
 
 " Replace the check for a tags file in the parent directory of the current
 " file with a check in every ancester directory
@@ -425,11 +460,11 @@ set nostartofline
 set ttyfast
 
 " Messages, info, status
-"set guicursor=                  " configure cursor to be a block
 set title                       " show title in console title bar
 set cursorline                  " have line indicating the cursor position
 "set colorcolumn=80              " show column line
-set signcolumn=auto
+"set signcolumn=auto
+set signcolumn=number
 set ruler                       " show the cursor position
 set showcmd
 "set showmode                   " show mode (insert,replace, etc..)
@@ -824,10 +859,11 @@ if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
 
-let g:airline#extensions#tabline#enabled = 1
+"let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
 "let g:airline_theme='gruvbox'
 "let g:airline_theme='gruvbox_material'
+let g:airline_theme='base16_gruvbox_dark_hard'
 "let g:airline_theme='deus'
 "let g:airline_theme='edge'
 "let g:airline_theme='everforest'
@@ -845,11 +881,11 @@ let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
 "let g:airline_theme='violet'
 "let g:airline_theme='ayu_dark'
 "let g:airline_theme='base16_brogrammer'
-let g:airline_theme='base16_dracula'
+"let g:airline_theme='base16_dracula'
 "let g:airline_solarized_bg='dark' " light and dark values
 "let g:airline_theme='solarized'
-
-
+"let g:airline_theme='dark'
+"let g:airline_theme='monokai_tasty'
 " .............................................................................
 " iamcco/markdown-preview.nvim
 " .............................................................................
@@ -1157,6 +1193,8 @@ nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
 nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+
+"clangd.inlayHints.enable
 
 
 " ............................................................................

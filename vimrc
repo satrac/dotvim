@@ -39,6 +39,9 @@ Plug 'madyanov/gruber.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
+" lightline
+"Plug 'itchyny/lightline.vim'
+
 " Navigate and manipulate files in a tree view.
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 
@@ -111,7 +114,14 @@ if has('syntax') && !exists('g:syntax_on')
     syntax enable
 endif
 
-filetype plugin indent on
+" Enable type file detection. Vim will be able to try to detect the type of file in use.
+filetype on
+
+" Enable plugins and load plugin for the detected file type.
+filetype plugin on
+
+" Load an indent file for the detected file type.
+filetype indent on
 
 " Force some filetypes to be a certain type
 au bufnewfile,bufRead *.pod set ft=perl
@@ -156,7 +166,7 @@ let g:one_allow_italics = 1 " I love italic for comments
 
 "colorscheme snazzy
 
-"colorscheme gruvbox
+colorscheme gruvbox
 
 let g:gruvbox_contrast_dark='hard'
 let g:grubbox_materal_better_performance = 1
@@ -184,8 +194,8 @@ let ayucolor="dark"   " for dark version of theme
 " gruber
 "colorscheme GruberDarker
 " slightly better version
-colorscheme gruber
 
+"colorscheme gruber
 
 " rusty
 "colorscheme rusty
@@ -431,12 +441,20 @@ set completeopt=menuone,longest
 set wildmenu                    " Menu completion in command mode on <Tab>
 set wildmode=full               " <Tab> cycles between all matching choices
 
+" Make wildmenu behave like similar to Bash completion.
+"set wildmode=list:longest
+
 "set wildchar=<Tab> wildmenu wildmode=full
 "set wildcharm=<C-z>
 "nnoremap <F5> :b <C-z>
 
 " ignore python crud
 set wildignore+=**/virtualenv_run/**,*.pyc,*.pyo,__pychache__
+
+" There are certain files that we would never want to edit with Vim.
+" Wildmenu will ignore files with these extensions.
+set wildignore+=*.docx,*.jpg,*.png,*.gif,*.pdf,*.pyc,*.exe,*.flv,*.img,*.xlsx
+
 
 " provides tab-completion for all file-related tasks
 " this appends to the default path
@@ -462,6 +480,7 @@ set ttyfast
 " Messages, info, status
 set title                       " show title in console title bar
 set cursorline                  " have line indicating the cursor position
+"set cursorcolumn                " highlight cursor line underneath the cursor vertically
 "set colorcolumn=80              " show column line
 "set signcolumn=auto
 set signcolumn=number
@@ -502,7 +521,7 @@ set directory=/tmp//,.
 " undo
 set undodir=~/.vim/undodir
 set undofile
-set history=9000
+set history=9000                " Set the commands to save in history default is 20
 
 "set paste
 set pastetoggle=<F4>

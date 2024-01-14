@@ -11,29 +11,36 @@ set nocompatible          " don't be compatible with vi
 call plug#begin('~/.vim/plugged')
 
 " Themes
-Plug 'joshdick/onedark.vim'
-Plug 'rakr/vim-one'
+Plug 'ayu-theme/ayu-vim'
+Plug 'bluz71/vim-moonfly-colors', { 'as': 'moonfly' }
+Plug 'bluz71/vim-nightfly-colors', { 'as': 'nightfly' }
+Plug 'camgunz/amber'
+Plug 'catppuccin/vim', { 'as': 'catppuccin' }
+Plug 'chriskempson/base16-vim'
+Plug 'colepeters/spacemacs-theme.vim'
 Plug 'connorholyday/vim-snazzy'
+Plug 'doums/darcula'
+Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'drsooch/gruber-darker-vim'
+Plug 'flazz/vim-colorschemes'
 Plug 'ghifarit53/tokyonight-vim'
 Plug 'gruvbox-community/gruvbox'
+Plug 'joshdick/onedark.vim'
 Plug 'junegunn/seoul256.vim'
-Plug 'colepeters/spacemacs-theme.vim'
-Plug 'sainnhe/gruvbox-material'
+Plug 'madyanov/gruber.vim'
+Plug 'patstockwell/vim-monokai-tasty'
+Plug 'phanviet/vim-monokai-pro'
+Plug 'rakr/vim-one'
+Plug 'rose-pine/vim', { 'as' : 'rosepine' }
 Plug 'sainnhe/edge'
 Plug 'sainnhe/everforest'
+Plug 'sainnhe/gruvbox-material'
 Plug 'sainnhe/sonokai'
-Plug 'phanviet/vim-monokai-pro'
-Plug 'flazz/vim-colorschemes'
-Plug 'chriskempson/base16-vim'
-Plug 'dracula/vim', { 'as': 'dracula' }
-Plug 'rose-pine/vim', { 'as' : 'rosepine' }
-Plug 'camgunz/amber'
-Plug 'ayu-theme/ayu-vim'
-"Plug 'k4yt3x/ayu-vim-darker'
-"Plug 'namrabtw/rusty.nvim', { 'branch': 'main' }
-Plug 'patstockwell/vim-monokai-tasty'
-Plug 'drsooch/gruber-darker-vim'
-Plug 'madyanov/gruber.vim'
+Plug 'jadomag/curtailed'
+
+"indent guides
+Plug 'nathanaelkane/vim-indent-guides'
+
 
 " modeline
 Plug 'vim-airline/vim-airline'
@@ -64,12 +71,14 @@ Plug 'ntpeters/vim-better-whitespace'
 
 Plug 'vim-perl/vim-perl', { 'for': 'perl', 'do': 'make clean carp dancer highlight-all-pragmas moose test-more try-tiny' }
 
-Plug 'preservim/nerdcommenter'
-"Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-commentary'
 
 Plug 'tpope/vim-unimpaired'
 
 Plug 'preservim/tagbar'
+
+Plug 'eggbean/resize-font.gvim'
+
 
 " Show git file changes in the gutter
 Plug 'airblade/vim-gitgutter'
@@ -127,6 +136,17 @@ filetype indent on
 au bufnewfile,bufRead *.pod set ft=perl
 au bufnewfile,bufRead *.sub set ft=perl
 
+function! AdjustFontSize(amount)
+    let s:font_size = s:font_size + a:amount
+    :execute "GuiFont! Consolas:h" . s:font_size
+endfunction
+
+if has("gui_running")
+    set guifont=JetBrainsMonoNerdFont\ 12
+    noremap <C-ScrollWheelUp> :call AdjustFontSize(1)<CR>
+    noremap <C-ScrollWheelDown> :call AdjustFontSize(-1)<CR>
+
+endif
 
 " -----------------------------------------------------------------------------
 " Color settings
@@ -136,8 +156,6 @@ if (has("termguicolors"))
 " https://github.com/vim/vim/issues/993#issuecomment-255651605
     let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
     let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-    "set t_8b=^[[48;2;%lu;%lu;%lum
-    "set t_8f=^[[38;2;%lu;%lu;%lum
     " for 256 colors
     set t_Co=256
     let g:rehash256=1
@@ -166,7 +184,31 @@ let g:one_allow_italics = 1 " I love italic for comments
 
 "colorscheme snazzy
 
-colorscheme gruvbox
+"colorscheme gruvbox
+
+"colorscheme nightfly
+
+let g:moonflyItalics = v:true
+let g:moonflyCursorColor = v:false
+let g:moonflyTransparent = v:false
+let g:moonflyUndercurls = v:true
+let g:moonflyUnderlineMatchParen = v:true
+let g:moonflyVirtualTextColor = v:true
+let g:moonflyWinSeparator = 2
+" colorscheme moonfly
+
+" has dark and light versions
+colorscheme curtailed
+
+"colorscheme darcula
+
+"colorscheme catppuccin_latte   " light
+
+" dark versions
+"colorscheme catppuccin_frappe
+"colorscheme catppuccin_macchiato
+"colorscheme catppuccin_mocha " darkest
+
 
 let g:gruvbox_contrast_dark='hard'
 let g:grubbox_materal_better_performance = 1
@@ -183,22 +225,17 @@ let g:grubbox_materal_better_performance = 1
 " amber
 "colorscheme amber
 
-
 " ayu
 "let ayucolor="light"  " for light version of theme
 "let ayucolor="mirage" " for mirage version of theme
 let ayucolor="dark"   " for dark version of theme
-"let ayucolor="darker"   " for dark version of theme
 "colorscheme ayu
 
 " gruber
 "colorscheme GruberDarker
 " slightly better version
-
 "colorscheme gruber
 
-" rusty
-"colorscheme rusty
 
 " edge_style vailable values: default, aura, neon
 let g:edge_style = 'neon'
@@ -251,15 +288,15 @@ let g:dracula_italic = 0
 
 
 " Specific colorscheme settings (must come after setting your colorscheme).
-"if (g:colors_name == 'gruvbox')
-"  if (&background == 'dark')
-"    hi Visual cterm=NONE ctermfg=NONE ctermbg=237 guibg=#3a3a3a
-"  else
-"    hi Visual cterm=NONE ctermfg=NONE ctermbg=228 guibg=#f2e5bc
-"    hi CursorLine cterm=NONE ctermfg=NONE ctermbg=228 guibg=#f2e5bc
-"    hi ColorColumn cterm=NONE ctermfg=NONE ctermbg=228 guibg=#f2e5bc
-"  endif
-"endif
+" if (g:colors_name == 'gruvbox')
+ " if (&background == 'dark')
+   " hi Visual cterm=NONE ctermfg=NONE ctermbg=237 guibg=#3a3a3a
+ " else
+   " hi Visual cterm=NONE ctermfg=NONE ctermbg=228 guibg=#f2e5bc
+   " hi CursorLine cterm=NONE ctermfg=NONE ctermbg=228 guibg=#f2e5bc
+   " hi ColorColumn cterm=NONE ctermfg=NONE ctermbg=228 guibg=#f2e5bc
+ " endif
+" endif
 
 ":hi clear FoldColumn
 
@@ -325,7 +362,11 @@ if (has("autocmd") && has("gui_running"))
     autocmd GUIEnter * set vb t_vb=
 endif
 
+" Sets cursor styles
+" Block in normal, line in insert, underline in replace
 set guicursor=
+"set guicursor=n-v-c-sm:block,i-ci-ve:ver25-Cursor,r-cr-o:hor20
+" set guicursor=
 " Use a line cursor within insert mode and a block cursor everywhere else.
 " Reference chart of values:
 "   Ps = 0  -> blinking block.
@@ -335,8 +376,31 @@ set guicursor=
 "   Ps = 4  -> steady underline.
 "   Ps = 5  -> blinking bar (xterm).
 "   Ps = 6  -> steady bar (xterm).
-let &t_SI = "\e[6 q"
-let &t_EI = "\e[2 q"
+let &t_SI.= "\e[6 q"
+let &t_SR.= "\e[4 q" "SR = REPLACE mode
+let &t_EI.= "\e[2 q"
+
+" konsole on KDE
+" let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+" let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+" let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+
+" - entered insert mode
+" let &t_SI = "^[[5 q^[]12;Magenta\007" " blinking bar (Ss) in magenta (Cs)
+" - entered replace mode
+" let &t_SR = "^[[0 q^[]12;Red\007" " blinking block (Ss) in red (Cs)
+" - leaving insert/replace mode
+" let &t_EI = "^[[2 q^[]112\007" " terminal power-on style (Se) and colour (Cr)
+
+
+
+
+" reset the cursor on start (for older versions of vim, usually not required)
+" augroup myCmds
+" au!
+" autocmd VimEnter * silent !echo -ne "\e[2 q"
+" augroup END
+
 
 " line numbers
 "set relativenumber              " Display relative line numbers
@@ -476,6 +540,7 @@ set nostartofline
 
 " for faster scrolling
 set ttyfast
+set ttimeoutlen=1
 
 " Messages, info, status
 set title                       " show title in console title bar
@@ -547,7 +612,7 @@ endif
 
 " I can't live without this!
 set comments=n:#                " python/perl/bash comments
-map # !!perl -pe'm{^\# ?}?s{^\#}{}:m{\S}?s{^}{\#}:1'<CR><LF>
+map # !!perl -pe'm{^\# ?}?s{^\#}{}:m{\S}?s{^}{\#}:1'<CR><LF>j
 
 
 " -----------------------------------------------------------------------------
@@ -573,7 +638,7 @@ inoremap <Down> <C-o>gj
 inoremap <Up> <C-o>gk
 
 " to quickly exit insert mode without pressing escape or Ctrl-C/Ctrl-[
-inoremap jj <esc>
+"inoremap jj <esc>
 "inoremap jk <esc>
 "inoremap hj <esc>
 
@@ -584,7 +649,7 @@ nnoremap Y y$
 nnoremap <leader>y "*y"
 
 " Keep cursor at the bottom of the visual selection after you yank it.
-vmap y ygv<Esc>
+"vmap y ygv<Esc>
 
 " paste from x11 clipboard
 nnoremap <leader>p "*p"
@@ -616,13 +681,16 @@ inoremap ' '<c-g>u
 nnoremap <expr> k (v:count > 5 ? "m'" . v:count : "") . 'k'
 nnoremap <expr> j (v:count > 5 ? "m'" . v:count : "") . 'j'
 
+nnoremap <silent> <C-m> <C-i>
+
+
 " moving text 1 line up or down with ALT j/k in normal,insert and visual modes
-vnoremap k :m '<-2<cr>gv=gv
-vnoremap k :m '>+1<cr>gv=gv
-inoremap k <esc>:m .-2<cr>==gi
-inoremap k <esc>:m .+1<cr>==gi
-nnoremap k :m .-2<cr>==
-nnoremap j :m .+1<cr>==
+" vnoremap k :m '<-2<cr>gv=gv
+" vnoremap k :m '>+1<cr>gv=gv
+" inoremap k <esc>:m .-2<cr>==gi
+" inoremap k <esc>:m .+1<cr>==gi
+"nnoremap k :m .-2<cr>==
+"nnoremap j :m .+1<cr>==
 
 " add quotes around visual selection
 vnoremap " <esc>`>a"<esc>`<i"<esc>
@@ -681,6 +749,10 @@ noremap <Del> "_x
 " Prevent selecting and pasting from overwriting what you originally copied.
 xnoremap p pgvy
 
+" increment/decrement
+nnoremap + <C-a>
+nnoremap - <C-x>
+
 " Select all
 nmap <C-a> gg<S-v>G
 
@@ -688,19 +760,33 @@ nmap <C-a> gg<S-v>G
 set virtualedit+=onemore
 nnoremap $ $l
 
+
+
+" delete a word backwards
+nnoremap dw vb_d
+
+
+
 " commented out interferes with Coc mappings
 " Edit Vim config file in a new tab.
 "noremap <Leader>ev :tabnew $MYVIMRC<CR>
 " Source Vim config file.
 "noremap <Leader>sv :source $MYVIMRC<CR>
-
 " map abreviations YOU'RE WELCOME!
+
+" -----------------------------------------------------------------------------
+" abbreviations
+" -----------------------------------------------------------------------------
+
+
 cabbrev WQ wq
 cabbrev Wq wq
 cabbrev W w
 cabbrev Q q
 
 cabbrev Vimrc e $MYVIMRC<cr>
+
+
 
 " -----------------------------------------------------------------------------
 " splits and tabs
@@ -744,8 +830,8 @@ nnoremap <C-Up> <c-w>k
 nnoremap <C-Right> <c-w>l
 
 
-" cycle through splits with shit <Tab>
-noremap <S-Tab> <c-w>w
+" cycle through splits with shift <Tab>
+"noremap <S-Tab> <c-w>w
 
 " note: alternative below is to just use your mouse
 " adjust split sizes more friendly (resizes +/- 3)
@@ -774,16 +860,16 @@ map <leader>_ <c-w>_
 "map <leader>tk <c-w>t<c-w>K
 
 " switch between tabes with ALT-1, ALT-2, ALT-3,....ALT-0
-map 1 :tabnext 1
-map 2 :tabnext 2
-map 3 :tabnext 3
-map 4 :tabnext 4
-map 5 :tabnext 5
-map 6 :tabnext 6
-map 7 :tabnext 7
-map 8 :tabnext 8
-map 9 :tabnext 9
-map 0 :tabnext 10
+" map 1 :tabnext 1
+" map 2 :tabnext 2
+" map 3 :tabnext 3
+" map 4 :tabnext 4
+" map 5 :tabnext 5
+" map 6 :tabnext 6
+" map 7 :tabnext 7
+" map 8 :tabnext 8
+" map 9 :tabnext 9
+" map 0 :tabnext 10
 "NOTE: ^[ is Ctrl-v ESC and ^M is Ctrl-v Ctrl-m
 
 
@@ -851,14 +937,21 @@ autocmd FileType make setlocal noexpandtab
 
 " Only show the cursor line in the active buffer.
 augroup CursorLine
-    au!
-    au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
-    au WinLeave * setlocal nocursorline
+   au!
+   au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+   au WinLeave * setlocal nocursorline
 augroup END
 
 
 " Unset paste on InsertLeave.
 autocmd InsertLeave * silent! set nopaste
+
+" activate cursorline when in insert mode
+" autocmd InsertEnter * set cursorline
+" autocmd InsertLeave * set nocursorline
+
+"autocmd InsertEnter * set cursorcolumn
+"autocmd InsertLeave * set nocursorcolumn
 
 
 " -----------------------------------------------------------------------------
@@ -878,11 +971,11 @@ if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
 
-"let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
 "let g:airline_theme='gruvbox'
 "let g:airline_theme='gruvbox_material'
-let g:airline_theme='base16_gruvbox_dark_hard'
+"let g:airline_theme='base16_gruvbox_dark_hard'
 "let g:airline_theme='deus'
 "let g:airline_theme='edge'
 "let g:airline_theme='everforest'
@@ -905,6 +998,14 @@ let g:airline_theme='base16_gruvbox_dark_hard'
 "let g:airline_theme='solarized'
 "let g:airline_theme='dark'
 "let g:airline_theme='monokai_tasty'
+"let g:airline_theme='catppuccin_latte'
+"let g:airline_theme='catppuccin_mocha'
+"let g:airline_theme='nightfly'
+"let g:airline_theme='rosepine'
+let g:airline_theme='moonfly'
+
+
+
 " .............................................................................
 " iamcco/markdown-preview.nvim
 " .............................................................................
@@ -1000,16 +1101,16 @@ let g:tagbar_compact = 1
 nmap <F8> :TagbarToggle<CR>
 
 " ............................................................................
-" nerdcommentor
-" ............................................................................
-" Create default mappings
-let g:NERDCreateDefaultMappings = 1
-"<leader>cc Comment out the current line or text selected in visual mode.
-"<leader>c<space> Toggles the comment state of the selected line(s).
-
-" ............................................................................
 " vim-commentary
 " ............................................................................
+
+" toggle comments using Ctrl+/ in insert/normal modes
+" I don't know the reason but vim recognises / as _
+nnoremap <C-_> :Commentary<cr>j
+inoremap <C-_> <Esc>:Commentary<cr>ji
+
+" adjust c/c++ and java commentstring
+autocmd FileType c,cpp,cs,java setlocal commentstring=//\ %s
 
 
 " ............................................................................
@@ -1046,6 +1147,22 @@ let g:tmux_navigator_disable_when_zoomed = 1
 
 " Disable wrapping
 let  g:tmux_navigator_no_wrap = 1
+
+
+
+" .............................................................................
+" vim-indent-guides
+" .............................................................................
+
+let g:indent_guides_enable_on_vim_startup = 0
+" :IndentGuidesEnable
+" :IndentGuidesDisable
+" :IndentGuidesToggle
+" to override
+"hi IndentGuidesOdd  ctermbg=black
+"hi IndentGuidesEven ctermbg=darkgrey
+let g:indent_guides_start_level = 2
+let g:indent_guides_guide_size = 1
 
 
 " .............................................................................
@@ -1287,3 +1404,4 @@ function! ToggleNetrw()
     silent Lexplore
   endif
 endfunction
+

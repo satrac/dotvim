@@ -79,7 +79,6 @@ Plug 'preservim/tagbar'
 
 Plug 'eggbean/resize-font.gvim'
 
-
 " Show git file changes in the gutter
 Plug 'airblade/vim-gitgutter'
 "Plug 'mhinz/vim-signify'
@@ -98,7 +97,6 @@ Plug 'ekalinin/dockerfile.vim'
 Plug 'stephpy/vim-yaml'
 Plug 'pangloss/vim-javascript'
 Plug 'jceb/vim-orgmode'
-
 
 " Markdown preview
 Plug 'iamcco/markdown-preview.nvim'
@@ -151,25 +149,14 @@ endif
 " -----------------------------------------------------------------------------
 " Color settings
 " -----------------------------------------------------------------------------
+
 " Enable 24-bit true colors if your terminal supports it.
-if (has("termguicolors"))
+set termguicolors
 " https://github.com/vim/vim/issues/993#issuecomment-255651605
-    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-    " for 256 colors
-    set t_Co=256
-    let g:rehash256=1
-    set termguicolors
-endif
-
-
-" vim hardcodes background color erase even if the terminfo file does
-" not contain bce (not to mention that libvte based terminals
-" incorrectly contain bce in their terminfo files). This causes
-" incorrect background rendering when using a color theme with a
-" background color.
-let &t_ut=''
-
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+" for 256 colors
+set t_Co=256
 
 " Enable syntax highlighting.
 syntax enable
@@ -189,16 +176,16 @@ let g:one_allow_italics = 1 " I love italic for comments
 "colorscheme nightfly
 
 let g:moonflyItalics = v:true
-let g:moonflyCursorColor = v:false
+let g:moonflyCursorColor = v:true
 let g:moonflyTransparent = v:false
 let g:moonflyUndercurls = v:true
 let g:moonflyUnderlineMatchParen = v:true
 let g:moonflyVirtualTextColor = v:true
 let g:moonflyWinSeparator = 2
-" colorscheme moonfly
+colorscheme moonfly
 
 " has dark and light versions
-colorscheme curtailed
+"colorscheme curtailed
 
 "colorscheme darcula
 
@@ -207,7 +194,7 @@ colorscheme curtailed
 " dark versions
 "colorscheme catppuccin_frappe
 "colorscheme catppuccin_macchiato
-"colorscheme catppuccin_mocha " darkest
+" colorscheme catppuccin_mocha " darkest
 
 
 let g:gruvbox_contrast_dark='hard'
@@ -275,8 +262,7 @@ let g:tokyonight_enable_italic = 1
 "colorscheme wombat
 "colorscheme wombat256
 
-" disable italics
-let g:dracula_italic = 0
+let g:dracula_italic = 1
 "colorscheme dracula
 "colorscheme wilight256
 
@@ -298,6 +284,10 @@ let g:dracula_italic = 0
  " endif
 " endif
 
+" -----------------------------------------------------------------------------
+" Highlight Overrides
+" -----------------------------------------------------------------------------
+
 ":hi clear FoldColumn
 
 hi clear VertSplit
@@ -308,12 +298,25 @@ hi clear VertSplit
 
 hi clear SignColumn
 
-
 " Spelling mistakes will be colored up red.
-hi SpellBad cterm=underline ctermfg=203 guifg=#ff5f5f
+hi SpellBad   cterm=underline ctermfg=203 guifg=#ff5f5f
 hi SpellLocal cterm=underline ctermfg=203 guifg=#ff5f5f
-hi SpellRare cterm=underline ctermfg=203 guifg=#ff5f5f
-hi SpellCap cterm=underline ctermfg=203 guifg=#ff5f5f
+hi SpellRare  cterm=underline ctermfg=203 guifg=#ff5f5f
+hi SpellCap   cterm=underline ctermfg=203 guifg=#ff5f5f
+
+" make all comments italic
+hi Comment cterm=italic gui=italic
+
+" vim hardcodes background color erase even if the terminfo file does
+" not contain bce (not to mention that libvte based terminals
+" incorrectly contain bce in their terminfo files). This causes
+" incorrect background rendering when using a color theme with a
+" background color.
+let &t_ut=''
+
+"if (&term =~ '^xterm' && &t_Co == 256)
+"  set t_ut= | set ttyscroll=1
+"endif
 
 
 " -----------------------------------------------------------------------------
@@ -497,8 +500,8 @@ set backspace=indent,eol,start  " allow backspacing over autoindent,EOL,BOL
 " sets the cwd to whatever file is in view, allows for better omni completion
 "set autochdir
 set complete+=kspell
-set completeopt=menuone,longest
-"set completeopt=menuone,noinsert,noselect
+"set completeopt=menuone,longest
+set completeopt=menuone,noinsert,noselect
 "set complete-=i
 
 "wildmenu
@@ -759,12 +762,6 @@ nmap <C-a> gg<S-v>G
 " move cursor to empty space at end of line
 set virtualedit+=onemore
 nnoremap $ $l
-
-
-
-" delete a word backwards
-nnoremap dw vb_d
-
 
 
 " commented out interferes with Coc mappings
@@ -1405,3 +1402,5 @@ function! ToggleNetrw()
   endif
 endfunction
 
+"let &t_Co=256
+set t_ut= | set ttyscroll=1

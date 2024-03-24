@@ -37,6 +37,8 @@ Plug 'sainnhe/everforest'
 Plug 'sainnhe/gruvbox-material'
 Plug 'sainnhe/sonokai'
 Plug 'jadomag/curtailed'
+Plug 'devsjc/vim-jb'
+
 
 "indent guides
 Plug 'nathanaelkane/vim-indent-guides'
@@ -55,6 +57,9 @@ Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 " fuzzy searching
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'stsewd/fzf-checkout.vim'
+
+Plug 'jiangmiao/auto-pairs'
 
 " vim for writers
 Plug 'reedes/vim-pencil'
@@ -97,9 +102,18 @@ Plug 'ekalinin/dockerfile.vim'
 Plug 'stephpy/vim-yaml'
 Plug 'pangloss/vim-javascript'
 Plug 'jceb/vim-orgmode'
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+
+" treesitter support for go syntax highlighting
+Plug 'charlespascoe/vim-go-syntax'
+
 
 " Markdown preview
 Plug 'iamcco/markdown-preview.nvim'
+
+
+Plug 'voldikss/vim-floaterm'
+
 
 " let vim and tmux work well together
 Plug 'tmux-plugins/vim-tmux'
@@ -151,12 +165,18 @@ endif
 " -----------------------------------------------------------------------------
 
 " Enable 24-bit true colors if your terminal supports it.
+"if has('termguicolors')
+"    set termguicolors
+"endif
+
 set termguicolors
+
 " https://github.com/vim/vim/issues/993#issuecomment-255651605
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 " for 256 colors
 set t_Co=256
+
 
 " Enable syntax highlighting.
 syntax enable
@@ -194,12 +214,31 @@ colorscheme moonfly
 " dark versions
 "colorscheme catppuccin_frappe
 "colorscheme catppuccin_macchiato
-" colorscheme catppuccin_mocha " darkest
+"colorscheme catppuccin_mocha " darkest
 
 
-let g:gruvbox_contrast_dark='hard'
-let g:grubbox_materal_better_performance = 1
+let g:gruvbox_material_ui_contrast='high'
+let g:gruvbox_material_background='hard'
+"let g:gruvbox_material_foreground='material' " can be material, mix, original
+"let g:gruvbox_material_foreground='material' " can be material, mix, original
+"let g:gruvbox_material_foreground='mix' " can be material, mix, original
+let g:gruvbox_material_foreground='original' " can be material, mix, original
+let g:gruvbox_material_disable_italic_comment=0
+let g:gruvbox_material_enable_italic=1
+let g:grubbox_materal_better_performance=1
+let g:gruvbox_material_cursor='orange'
+let g:gruvbox_material_transparent_background=0
+"let g:gruvbox_material_menu_selection_background='grey'
+"let g:gruvbox_material_menu_selection_background='blue'
+let g:gruvbox_material_menu_selection_background='orange'
+let g:gruvbox_material_sign_column_background='none'
+"let g:gruvbox_material_visual='reverse'
+let g:gruvbox_material_visual='blue background'
+"let g:gruvbox_material_statusline_style='default'
+"let g:gruvbox_material_statusline_style='mix'
+let g:gruvbox_material_statusline_style='original'
 "colorscheme gruvbox-material
+"let g:lightline = {'colorscheme' : 'gruvbox_material'}
 
 "let g:disable_bg = 1
 "let g:disable_float_bg = 1
@@ -312,12 +351,17 @@ hi Comment cterm=italic gui=italic
 " incorrectly contain bce in their terminfo files). This causes
 " incorrect background rendering when using a color theme with a
 " background color.
-let &t_ut=''
+"let &t_ut=''
 
 "if (&term =~ '^xterm' && &t_Co == 256)
 "  set t_ut= | set ttyscroll=1
 "endif
 
+"set t_ut= | set ttyscroll=1
+
+hi clear Cursor
+"highlight Cursor guifg=white guibg=black
+"highlight iCursor guifg=white guibg=steelblue
 
 " -----------------------------------------------------------------------------
 " Status line
@@ -367,26 +411,37 @@ endif
 
 " Sets cursor styles
 " Block in normal, line in insert, underline in replace
-set guicursor=
+"set guicursor=
+"set guicursor=n-v-c-sm:block,i-ci-ve:ver25-Cursor,r-cr-o:hor20
 "set guicursor=n-v-c-sm:block,i-ci-ve:ver25-Cursor,r-cr-o:hor20
 " set guicursor=
 " Use a line cursor within insert mode and a block cursor everywhere else.
 " Reference chart of values:
 "   Ps = 0  -> blinking block.
 "   Ps = 1  -> blinking block (default).
-"   Ps = 2  -> steady block.
+"   Ps = 2  -> solid block.
 "   Ps = 3  -> blinking underline.
-"   Ps = 4  -> steady underline.
+"   Ps = 4  -> solid underline.
 "   Ps = 5  -> blinking bar (xterm).
-"   Ps = 6  -> steady bar (xterm).
-let &t_SI.= "\e[6 q"
+"   Ps = 6  -> solid vertical bar (xterm).
+"let &t_SI.= "\e[6 q" "SI = INSERT mode
+"let &t_SR.= "\e[4 q" "SR = REPLACE mode
+"let &t_EI.= "\e[2 q" "EI = NORMAL mode
+
+"For VTE compatible terminals (urxvt, st, xterm, gnome-terminal 3.x, Konsole KDE5 and others), wsltty and Windows Terminal
+"let &t_SI = "\<Esc>[6 q"
+"let &t_SR = "\<Esc>[4 q"
+"let &t_EI = "\<Esc>[2 q"
+
+let &t_SI.= "\e[6 q" "SI = INSERT mode
 let &t_SR.= "\e[4 q" "SR = REPLACE mode
-let &t_EI.= "\e[2 q"
+"let &t_EI.= "\e[2 q" "EI = NORMAL mode
+let &t_EI.= "\e[1 q" "EI = NORMAL mode
 
 " konsole on KDE
-" let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-" let &t_SR = "\<Esc>]50;CursorShape=2\x7"
-" let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+"let &t_SI = "\<Esc>]50;CursorShape=6\x7"
+"let &t_SR = "\<Esc>]50;CursorShape=4\x7"
+"let &t_EI = "\<Esc>]50;CursorShape=2\x7"
 
 " - entered insert mode
 " let &t_SI = "^[[5 q^[]12;Magenta\007" " blinking bar (Ss) in magenta (Cs)
@@ -587,8 +642,8 @@ set directory=/tmp//,.
 
 
 " undo
-set undodir=~/.vim/undodir
 set undofile
+set undodir=~/.vim/undodir
 set history=9000                " Set the commands to save in history default is 20
 
 "set paste
@@ -615,8 +670,7 @@ endif
 
 " I can't live without this!
 set comments=n:#                " python/perl/bash comments
-map # !!perl -pe'm{^\# ?}?s{^\#}{}:m{\S}?s{^}{\#}:1'<CR><LF>j
-
+nmap # !!perl -pe'm{^\# ?}?s{^\#}{}:m{\S}?s{^}{\#}:1'<CR><LF>j
 
 " -----------------------------------------------------------------------------
 " some useful key bindings
@@ -971,7 +1025,7 @@ endif
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
 "let g:airline_theme='gruvbox'
-"let g:airline_theme='gruvbox_material'
+let g:airline_theme='gruvbox_material'
 "let g:airline_theme='base16_gruvbox_dark_hard'
 "let g:airline_theme='deus'
 "let g:airline_theme='edge'
@@ -1056,6 +1110,7 @@ let g:vim_markdown_no_extensions_in_markdown = 1
 " junegunn/fzf.vim
 " .............................................................................
 
+"let g:fzf_layout = { 'up': '~90%', 'window': { 'width': 0.8, 'height': 0.8, 'yoffset':0.5, 'xoffset': 0.5 } }
 let $FZF_DEFAULT_OPTS = '--bind ctrl-a:select-all'
 
 let g:fzf_action = {
@@ -1071,6 +1126,20 @@ nnoremap <silent> <Leader>p :FZF -m<CR>
 " Map a few common things to do with FZF.
 nnoremap <silent> <Leader><Enter> :Buffers<CR>
 nnoremap <silent> <Leader>l :Lines<CR>
+
+" Add an AllFiles variation that ignores .gitignore files
+command! -bang -nargs=? -complete=dir AllFiles
+    \ call fzf#run(fzf#wrap('allfiles', fzf#vim#with_preview({ 'dir': <q-args>, 'sink': 'e', 'source': 'rg --files --hidden --no-ignore' }), <bang>0))
+
+
+nmap <leader>f :Files<cr>
+nmap <leader>F :AllFiles<cr>
+nmap <leader>b :Buffers<cr>
+nmap <leader>h :History<cr>
+nmap <leader>r :Rg<cr>
+nmap <leader>R :Rg<space>
+nmap <leader>gb :GBranches<cr>
+
 
 " Allow passing optional flags into the Rg command.
 "   Example: :Rg myterm -g '*.md'
@@ -1089,6 +1158,10 @@ let g:NERDTreeAutoDeleteBuffer=1
 let g:NERDTreeQuitOnOpen=0
 
 nnoremap <leader>n <esc>:NERDTreeToggle<cr>
+nnoremap <C-n> :NERDTree<CR>
+nnoremap <C-t> :NERDTreeToggle<CR>
+nnoremap <C-f> :NERDTreeFind<CR>
+
 
 " ............................................................................
 " tagbar
@@ -1146,6 +1219,18 @@ let g:tmux_navigator_disable_when_zoomed = 1
 let  g:tmux_navigator_no_wrap = 1
 
 
+" .............................................................................
+" vim-floaterm
+" .............................................................................
+"nnoremap   <silent>   <F7>    :FloatermNew<CR>
+"tnoremap   <silent>   <F7>    <C-\><C-n>:FloatermNew<CR>
+"nnoremap   <silent>   <F8>    :FloatermPrev<CR>
+"tnoremap   <silent>   <F8>    <C-\><C-n>:FloatermPrev<CR>
+"nnoremap   <silent>   <F9>    :FloatermNext<CR>
+"tnoremap   <silent>   <F9>    <C-\><C-n>:FloatermNext<CR>
+nnoremap   <silent>   <F12>   :FloatermToggle<CR>
+tnoremap   <silent>   <F12>   <C-\><C-n>:FloatermToggle<CR>
+
 
 " .............................................................................
 " vim-indent-guides
@@ -1161,6 +1246,17 @@ let g:indent_guides_enable_on_vim_startup = 0
 let g:indent_guides_start_level = 2
 let g:indent_guides_guide_size = 1
 
+
+" .............................................................................
+" vim-go
+" .............................................................................
+
+let g:go_def_mode='gopls'
+let g:go_info_mode='gopls'
+
+"let g:ale_linters = {
+"  \ 'go': ['gopls'],
+"  \}
 
 " .............................................................................
 " Coc.nvim
@@ -1402,5 +1498,16 @@ function! ToggleNetrw()
   endif
 endfunction
 
-"let &t_Co=256
+" fix for kitty, I don't understand why this works for me to put this at the end
+" this fixes a background issue for me.
+let &t_Co=256
 set t_ut= | set ttyscroll=1
+
+"set t_SI = "\<Esc>[6 q"
+"set t_SR = "\<Esc>[4 q"
+"set t_EI = "\<Esc>[2 q"
+
+let &t_SI.= "\e[6 q" "SI = INSERT mode
+let &t_SR.= "\e[4 q" "SR = REPLACE mode
+"let &t_EI.= "\e[2 q" "EI = NORMAL mode
+let &t_EI.= "\e[1 q" "EI = NORMAL mode
